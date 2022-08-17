@@ -1,0 +1,17 @@
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.content-chart{
+    width: 50vw;
+    height: 50vh;
+}
+
+.flex-content-menu{
+    display: flex;
+    justify-content: center;
+}
+select{
+    margin: 20px 10px;
+}

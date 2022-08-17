@@ -1,0 +1,62 @@
+ <div class="content-tableData unit w-2-3">
+            <table id="myTable" class="cell-border ui celled table">
+                <thead>
+                    <?php
+                    $hostname = "localhost";
+                    $user = "root";
+                    $password = "";
+                    $database = "devsopa";
+                    $where = "";
+
+                    $conexion = mysqli_connect($hostname, $user, $password, $database) or die("Ha fallado la conexion a la base de datos: " . mysqli_error($conexion));
+
+                    //Consulto el nombre de cada columna de la tabla
+                    $queryConsulta = "SELECT COLUMN_NAME
+                FROM information_schema.columns WHERE
+                table_schema = '$database'
+                AND table_name = 'tt_troubleticket_export'";
+
+                    $response = mysqli_query($conexion, $queryConsulta);
+
+                    //Fila para la descripcion de cada columna
+                    echo "<tr>";
+                    while ($fila = mysqli_fetch_row($response)) {
+                        $i = 0;
+                        echo "<td>" . $fila[$i] . "</td>";
+                        $i++;
+                    }
+                    echo "</tr>";
+
+                    //cierro la conexion
+                    $conexion->close();
+                    ?>
+                </thead>
+                <tbody>
+
+                    <?php
+                    $hostname = "localhost";
+                    $user = "root";
+                    $password = "";
+                    $database = "devsopa";
+                    $where = "";
+
+                    $conexion = mysqli_connect($hostname, $user, $password, $database) or die("Ha fallado la conexion a la base de datos: " . mysqli_error($conexion));
+
+                    $queryConsulta = "SELECT * FROM `tt_troubleticket_export` LIMIT 10";
+
+                    $response = mysqli_query($conexion, $queryConsulta);
+
+                    while ($fila = mysqli_fetch_row($response)) {
+                        echo "<tr>";
+                        for ($i = 0; $i < count($fila); $i++) {
+                            echo "<td>" . $fila[$i] . "</td>";
+                        }
+                        echo "</tr>";
+                    }
+
+                    //cierro la conexion
+                    $conexion->close();
+                    ?>
+                </tbody>
+            </table>
+        </div>
