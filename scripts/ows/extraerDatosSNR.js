@@ -77,7 +77,7 @@ let excel;
 //Como la lectura de datos puede tardar declaro la funcion de forma asyncrona para que esperé la signación de los valores a la varible
 excelInput.addEventListener("change",async function(){
 
-    const content = await readXlsxFile(excelInput.files[0]);
+    //const content = await readXlsxFile(excelInput.files[0]);
 
     //Declaro una variable con la clase
      //excel = new Excel(content);
@@ -91,9 +91,11 @@ excelInput.addEventListener("change",async function(){
 });
 
 
-boton.addEventListener("click",async function(){
+boton.addEventListener("click", function(){
     let valorConfirm = confirm("¿Está seguro/a que desea subir esta información a la base de datos?");
+    console.log(valorConfirm);
     if(valorConfirm){
+        
         boton.classList.add("state");
         alert("Por favor NO interrumpa la carga de la página Web");
         boton.submit();

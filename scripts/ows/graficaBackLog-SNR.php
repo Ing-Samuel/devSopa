@@ -6,10 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- cdn chartJs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.2/chart.js"></script>
+    <!-- plugin Zoom chartJs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js" integrity="sha512-klQv6lz2YR+MecyFYMFRuU2eAl8IPRo6zHnsc9n142TJuJHS8CG0ix4Oq9na9ceeg1u5EkBfZsFcV3U7J51iew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- plugin crossHair chartJs -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-crosshair@1.2.0/dist/chartjs-plugin-crosshair.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    <!-- Estilos para la tabla -->
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css"> -->
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
@@ -565,23 +570,29 @@
                     </select>
                 </label>
             </form>
-
-
-            <main class="content-charts">
-                <div class="size-chart">
-                    <h4 id="chart-title">TOTAL ORDENES OWS</h4>
-                    <canvas id="myChart"></canvas>
-                    <hr>
-                    <button onclick="resetZoomChart()">Reset</button>
-                </div>
-                <div class="size-chart">
-                    <h4 id="chart-title2">TOTAL ORDENES OWS - CERRADAS</h4>
-                    <canvas id="myChart2"></canvas>
-                    <hr>
-                    <button onclick="resetZoomChart2()">Reset</button>
-                </div>
-            </main>
         </div>
+
+        <main class="content-charts">
+            <div class="size-chart">
+                <h4 id="chart-title">TOTAL ORDENES OWS</h4>
+                <canvas id="myChart"></canvas>
+                <hr>
+                <button onclick="resetZoomChart()">Reset</button>
+            </div>
+            <div class="size-chart">
+                <h4 id="chart-title2">TOTAL ORDENES OWS - CERRADAS</h4>
+                <canvas id="myChart2"></canvas>
+                <hr>
+                <button onclick="resetZoomChart2()">Reset</button>
+            </div>
+            <div class="size-chart">
+                <h4 id="chart-title3">BackLog</h4>
+                <canvas id="myChart3"></canvas>
+                <hr>
+                <button onclick="resetZoomChart3()">Reset</button>
+            </div>
+        </main>
+
     </div>
 
 
@@ -590,22 +601,21 @@
     if ($anyoCreacion == "ALL") {
 
         $generalData[] = array();
-
     } else {
 
-        
+
         $db = "";
         #region CONSULTA PARA LOS LABELS EN LA AXIS X
 
         function ConsultaLabels($tipoFecha, $fechaCreacion, $anyoCreacion, $mesCreacion, $db)
         {
 
-        $mysql_host = "localhost";
-        $mysql_user = "root";
-        $mysql_password = "";
-        $mysql_database = "devsopa";
+            $mysql_host = "localhost";
+            $mysql_user = "root";
+            $mysql_password = "";
+            $mysql_database = "devsopa";
 
-        $db = mysqli_connect($mysql_host, $mysql_user, $mysql_password, $mysql_database) or die("Error durante la conexión a la base de datos");
+            $db = mysqli_connect($mysql_host, $mysql_user, $mysql_password, $mysql_database) or die("Error durante la conexión a la base de datos");
 
 
             $arrayFilter = array(" date_format(tt.`" . $tipoFecha . "`,'%d-%M') LIKE '" . $fechaCreacion . "%'", " date_format(tt.`" . $tipoFecha . "`,'%Y') LIKE '" . $anyoCreacion . "%'", " date_format(tt.`" . $tipoFecha . "`, '%M') = '" . $mesCreacion . "'");
@@ -652,13 +662,13 @@
         #region Consulta General: Contar la cantidad de tiquetes por mes validadando los filtros
 
         function ConsultaDatosAxis($conection, $labelData, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, $segmento, $segmentoSNR, $SOservisdesk, $SObmc, $mesCreacion, $estado, $tipoFecha)
-        {  
-        $mysql_host = "localhost";
-        $mysql_user = "root";
-        $mysql_password = "";
-        $mysql_database = "devsopa";
+        {
+            $mysql_host = "localhost";
+            $mysql_user = "root";
+            $mysql_password = "";
+            $mysql_database = "devsopa";
 
-        $conection = mysqli_connect($mysql_host, $mysql_user, $mysql_password, $mysql_database) or die("Error durante la conexión a la base de datos");
+            $conection = mysqli_connect($mysql_host, $mysql_user, $mysql_password, $mysql_database) or die("Error durante la conexión a la base de datos");
 
             $arrayFilter = array(" date_format(tt.`" . $tipoFecha . "`, '%d-%M') LIKE '" . $fechaCreacion . "%'", "`Región` = '" . $region . "'", "`Departamento` = '" . $departamento . "'", "`Tecnología` = '" . $tecnologia . "'", "`Tipo de Orden` = '" . $tipoOrden . "'", "`Categoría` = '" . $categoria . "'", "`Subcategoría` = '" . $subcategoria . "'", "`segmento` NOT LIKE '" . $segmento . "%'", "`segmento` LIKE '" . $segmentoSNR . "%'", "`Sistema Origen` = '" . $SOservisdesk . "'", "`Sistema Origen` = '" . $SObmc . "'", " date_format(tt.`" . $tipoFecha . "`, '%M') = '" . $mesCreacion . "'", "`Estado` " . $estado, "date_format(tt.`" . $tipoFecha . "`, '%d-%M') IS NOT NULL");
 
@@ -705,8 +715,8 @@
             return $dataArray;
         }
         #endregion
-        
-        
+
+
         $dataTtCerradosUno = array();
         $dataTtCerradosDOS = array();
         $dataTtCerradosTRES = array();
@@ -717,7 +727,35 @@
         $dataTtCerradosUno = ConsultaDatosAxis($db, $labelData2, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "ALL", "ALL", $mesCreacion, "LIKE 'Cerrado%'", "Fecha Cierre");
 
         //echo "<script>console.log('".json_encode($dataTtCerradosUno)."')</script>";
+        #region Requerimiento muestra de datos BackLog
 
+        $mysql_database = "devsopa";
+        $mysql_host = "localhost";
+        $mysql_user = "root";
+        $mysql_password = "";
+
+        $conection = mysqli_connect($mysql_host,$mysql_user,$mysql_password,$mysql_database);
+
+        $query = "SELECT  CONCAT(bg.Month,'-',bg.Day), `bg`.`Recuento-idtiquete`
+        FROM `backlog_general` as bg";
+
+        $resultado = mysqli_query($conection,$query);
+
+        if(mysqli_num_rows($resultado)){
+            $dataSetBackLog = mysqli_fetch_all($resultado);
+        }
+
+
+
+        // echo "<script>console.log(".json_encode($dataSetBackLog).")</script>";
+
+        $labelBackLog = array_column($dataSetBackLog,0);
+        $dataBackLog = array_column($dataSetBackLog,1);
+
+        // echo "<script>console.log(".json_encode($labelBackLog).")</script>";
+        // echo "<script>console.log(".json_encode($dataBackLog).")</script>";
+
+        mysqli_close($conection);
 
         if ($tipoOrden == 'TT_SNR') {
 
@@ -734,8 +772,7 @@
             $dataTtCerradosTRES = ConsultaDatosAxis($db, $labelData2, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "TIQUETE", "ALL", "ALL", $mesCreacion, "LIKE 'Cerrado%'", "Fecha Cierre");
 
             //Arreglo general con los datos para graficar y sus respesctivos Titulos
-            $generalData[] = array($labelData, $dataTtUNO, $dataTtDOS, $dataTtTRES, "TOTAL TIQUETES SNR", "TOTAL TIQUETES SNR", "TIQUETE TÉCNICO - SNR", "TIQUETE PROBLEMA - SNR", "ALL", $dataTtCerradosUno, $dataTtCerradosDOS, $dataTtCerradosTRES, $labelData2);
-
+            $generalData[] = array($labelData, $dataTtUNO, $dataTtDOS, $dataTtTRES, "TOTAL TIQUETES SNR", "TOTAL TIQUETES SNR", "TIQUETE TÉCNICO - SNR", "TIQUETE PROBLEMA - SNR", "ALL", $dataTtCerradosUno, $dataTtCerradosDOS, $dataTtCerradosTRES, $labelData2,$labelBackLog,$dataBackLog);
         } else if ($tipoOrden == 'TT_TIQUET') {
 
             //Consulta por Tiquetes Señal a ruido (SNR) : Cantidad de 'TIQUETES TECNICOS DE ORIGEN SERVISDEKS' por día
@@ -750,12 +787,11 @@
             //Consulta por Tiquetes Señal a ruido (SNR) : Cantidad de 'TIQUETES TECNICOS DE ORIGEN BMC' por día
             $dataTtCerradosTRES = ConsultaDatosAxis($db, $labelData2, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "ALL", "BMC RE", $mesCreacion, "LIKE 'Cerrado%'", "Fecha Cierre");
 
-            $generalData[] = array($labelData, $dataTtUNO, $dataTtDOS, $dataTtTRES, "TOTAL TIQUETES TÉCNICOS", "TOTAL TT_TIQUETE TÉCNICO", "ORIGEN SERVICE DESK", "ORIGEN BMC REMEDY", $mesCreacion, $dataTtCerradosUno, $dataTtCerradosDOS, $dataTtCerradosTRES, $labelData2);
-            
+            $generalData[] = array($labelData, $dataTtUNO, $dataTtDOS, $dataTtTRES, "TOTAL TIQUETES TÉCNICOS", "TOTAL TT_TIQUETE TÉCNICO", "ORIGEN SERVICE DESK", "ORIGEN BMC REMEDY", $mesCreacion, $dataTtCerradosUno, $dataTtCerradosDOS, $dataTtCerradosTRES, $labelData2,$labelBackLog,$dataBackLog);
         } else {
 
             $nulleable = array();
-            $generalData[] = array($labelData, $dataTtUNO, $nulleable, $nulleable, "TOTAL ORDENES OWS - Abiertos", "TOTAL ORDENES: " . $tipoOrden, "", "", $mesCreacion, $dataTtCerradosUno, $dataTtCerradosDOS, $dataTtCerradosTRES, $labelData2);
+            $generalData[] = array($labelData, $dataTtUNO, $nulleable, $nulleable, "TOTAL ORDENES OWS - Abiertos", "TOTAL ORDENES: " . $tipoOrden, "", "", $mesCreacion, $dataTtCerradosUno, $dataTtCerradosDOS, $dataTtCerradosTRES, $labelData2,$labelBackLog,$dataBackLog);
         }
     }
 
@@ -773,18 +809,18 @@
         <a href="http://localhost/PryWeb/devSopa/scripts/ows/CargaDatosSNR.php" target="_blank">CARGA DE DATOS</a>
     </button>
 
-    <div class="content-cards">
+    <!-- <div class="content-cards">
         <div class="card tolal">TOTAL :</div>
         <div class="card totalSinTP">TOTAL SIN TP :</div>
         <div class="card totalConTP">TOTAL TIQUETE PROBLEMA :</div>
-    </div>
+    </div> -->
 
 
     <script>
         let generalData = <?php echo json_encode($generalData); ?>;
 
         //Desestructuro los datos
-        let labels, dataTTAbiertos, dataTTAbiertosDos, dataTTAbiertosTres, tituloGeneral, tituloDataLabelUno, tituloDataLabelDos, tituloDataLabelTres, dataTtCerrado, dataTtCerradoDOS, dataTtCerradoTRES, labelData2;
+        let labels, dataTTAbiertos, dataTTAbiertosDos, dataTTAbiertosTres, tituloGeneral, tituloDataLabelUno, tituloDataLabelDos, tituloDataLabelTres, dataTtCerrado, dataTtCerradoDOS, dataTtCerradoTRES, labelData2,labelBackLog,dataBackLog;
 
         labels = generalData[0][0];
         dataTTAbiertos = generalData[0][1]; // Total tiquetes Abiertos
@@ -798,6 +834,8 @@
         dataTtCerradoDOS = generalData[0][10]; // Total tiquetes Cerrados sin tt problema ó sin los de órigen BMC
         dataTtCerradoTRES = generalData[0][11]; // Total tiquetes Cerrados solo tt problema ó solo de órigen BMC
         labelData2 = generalData[0][12]; // Labels para la segunda grafica
+        labelBackLog = generalData[0][13];
+        dataBackLog = generalData[0][14];
 
 
         document.getElementById("chart-title").innerText = tituloGeneral + " - ABIERTOS";
@@ -828,26 +866,26 @@
 
         //Devuelvo la suma de cada Array y lo paso a una variable
         //Si es NaN sumele cero, sino le suma el valor que traiga el indice
-        let sumaDataTTAbiertos = dataTTAbiertos.reduce((acumulador, actual) => {
-            return isNaN(actual) ? acumulador + 0 : acumulador + actual;
-        }, 0);
-        let sumaDataTTAbiertosDos = dataTTAbiertosDos.reduce((acumulador, actual) => {
-            return isNaN(actual) ? acumulador + 0 : acumulador + actual;
-        }, 0);
-        let sumaDataTTAbiertosTres = dataTTAbiertosTres.reduce((acumulador, actual) => {
-            return isNaN(actual) ? acumulador + 0 : acumulador + actual;
-        }, 0);
+        // let sumaDataTTAbiertos = dataTTAbiertos.reduce((acumulador, actual) => {
+        //     return isNaN(actual) ? acumulador + 0 : acumulador + actual;
+        // }, 0);
+        // let sumaDataTTAbiertosDos = dataTTAbiertosDos.reduce((acumulador, actual) => {
+        //     return isNaN(actual) ? acumulador + 0 : acumulador + actual;
+        // }, 0);
+        // let sumaDataTTAbiertosTres = dataTTAbiertosTres.reduce((acumulador, actual) => {
+        //     return isNaN(actual) ? acumulador + 0 : acumulador + actual;
+        // }, 0);
 
 
-        //Inserto el valor acumulado en las tarjetas y lo convierto a un formato de número
-        let tarjetaTotal = document.querySelector(".tolal");
-        tarjetaTotal.innerHTML = tituloDataLabelUno + "<br> ABIERTOS <br>" + sumaDataTTAbiertos.toLocaleString();
+        // //Inserto el valor acumulado en las tarjetas y lo convierto a un formato de número
+        // let tarjetaTotal = document.querySelector(".tolal");
+        // tarjetaTotal.innerHTML = tituloDataLabelUno + "<br> ABIERTOS <br>" + sumaDataTTAbiertos.toLocaleString();
 
-        let tarjetaTotalSinTP = document.querySelector(".totalSinTP");
-        tarjetaTotalSinTP.innerHTML = tituloDataLabelDos + "<br> ABIERTOS <br>" + sumaDataTTAbiertosDos.toLocaleString();
+        // let tarjetaTotalSinTP = document.querySelector(".totalSinTP");
+        // tarjetaTotalSinTP.innerHTML = tituloDataLabelDos + "<br> ABIERTOS <br>" + sumaDataTTAbiertosDos.toLocaleString();
 
-        let tarjetaTotalConTP = document.querySelector(".totalConTP");
-        tarjetaTotalConTP.innerHTML = tituloDataLabelTres + "<br> ABIERTOS <br>" + sumaDataTTAbiertosTres.toLocaleString();
+        // let tarjetaTotalConTP = document.querySelector(".totalConTP");
+        // tarjetaTotalConTP.innerHTML = tituloDataLabelTres + "<br> ABIERTOS <br>" + sumaDataTTAbiertosTres.toLocaleString();
 
 
         //#endregion
@@ -900,10 +938,10 @@
                     label: tituloDataLabelUno,
                     data: dataTtCerrado,
                     backgroundColor: [
-                        'rgba(4, 48, 106,0.5)',
+                        'rgba(186, 74, 0,0.5)',
                     ],
                     borderColor: [
-                        'rgb(4, 48, 106)'
+                        'rgb(186, 74, 0)'
                     ],
                     borderWidth: 2,
                     tension: 0.3
@@ -934,6 +972,22 @@
                 },
             ]
         };
+
+        const data3 = {
+            labels: labelBackLog,
+            datasets: [{
+                label: "BackLog",
+                data: dataBackLog,
+                backgroundColor: [
+                    'rgba(0, 120, 86,0.5)',
+                ],
+                borderColor: [
+                    'rgb(0, 120, 86)'
+                ],
+                borderWidth: 2,
+                tension: 0.3
+            }, ]
+        }
 
         const zoomOptions = {
 
@@ -987,6 +1041,12 @@
                         display: true,
                     },
                     zoom: zoomOptions,
+
+                    crosshair: {
+                        color: '#2C3E50',
+                        width: 1
+                    }
+
                 },
                 interaction: {
                     mode: 'index',
@@ -995,10 +1055,47 @@
             },
 
         };
+
         //Chart 2
         const config2 = {
             type: 'line',
             data: data2,
+            options: {
+                scales: {
+                    y: {
+                        //El eje de Y inicia en 0
+                        beginAtZero: true,
+                        grid: {
+                            drawOnChartArea: false,
+                        }
+                    },
+                    x: {
+                        //Inician los valores desde Enero
+                        //min: 'enero'
+                        grid: {
+                            drawOnChartArea: false,
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: true,
+                    },
+                    zoom: zoomOptions,
+
+                },
+
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+            }
+        };
+
+        const config3 = {
+            type: 'line',
+            data: data3,
             options: {
                 scales: {
                     y: {
@@ -1044,12 +1141,21 @@
             config2,
         );
 
+        const chart3 = new Chart(
+            document.getElementById("myChart3"),
+            config3,
+        )
+
         function resetZoomChart() {
             chart.resetZoom();
         }
 
         function resetZoomChart2() {
             chart2.resetZoom();
+        }
+
+        function resetZoomChart3() {
+            chart3.resetZoom();
         }
     </script>
     <script src="subScript/dinami-backLog-Snr.js"></script>

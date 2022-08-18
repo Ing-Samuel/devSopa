@@ -45,7 +45,7 @@
             <div class="button ">
                 <button value="" class="btn btn-outline-primary state">CARGAR INFORMACIÓN A LA BD</button>
             </div>
-            <div class="table-responsive">
+            <!-- <div class="table-responsive">
                 <table class="table table-hover border-primary" id="excel-table">
                     <thead>
                         <tr></tr>
@@ -53,6 +53,10 @@
                     <tbody>
                     </tbody>
                 </table>
+            </div> TABLA DE DATOS-->
+
+            <div>
+                <input type="hidden" name="">
             </div>
         </div>
     </form>

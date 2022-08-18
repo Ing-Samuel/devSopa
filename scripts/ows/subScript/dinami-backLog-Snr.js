@@ -54,5 +54,5 @@
         });
 
         button.addEventListener("click", function() {
-            window.open("http://localhost/PryWeb/devSopa/scripts/ows/front-cargaDatos-Incidente-tt-crd.php");
+            window.open("http://localhost/devSopaV22/scripts/ows/front-cargaDatos-Incidente-tt-crd.php");
         });

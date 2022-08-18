@@ -49,9 +49,14 @@ if (isset($_FILES["form-control"])) {
 
     //Contador de filas
     $contador = 0;
+    
+    $contadorGeneral = 0;
 
+    //Acumulador de errores por fila
+    $stringError = "";
     //Recorrido de Filas
     foreach ($hojaAcutal->getRowIterator() as $fila) {
+        $contadorGeneral++;
 
         //Reinicio la sentencia
         $query = "";
@@ -86,22 +91,20 @@ if (isset($_FILES["form-control"])) {
             //Capturo el query que voy a ejecutar
             $promise = mysqli_query($conection, $query);
 
-            //Valido el Query
+            //Valido el Query            
             if (mysqli_affected_rows($conection) > 0) {
                 //echo "Numero de Filas Afectadas".mysqli_affected_rows($conection)."<br>";
                 //echo "<script> window.location = \"CargaDatosSNR.php\"; </script>";
                 $contador++;
             } else {
-                echo "<h1>
-                            <p>ERROR EN LA INSERCIÓN DE DATOS</p>
-                            <br>
-                         </h1>" .
-                    mysqli_error($conection);
+
+                $stringError .= "<center><h3>ERROR EN LA INSERCIÓN DE DATOS : </h3><p>" .mysqli_error($conection) . "</p></center><br>";
             }
         }
     }
+
+    echo "<h1>Número de Leidas en total = " . $contadorGeneral . "</h1>";
+    echo "<h1>Número de Filas Insertadas en total = " . $contador . "</h1>";
+    echo "<br><br>".$stringError;
     mysqli_close($conection);
-    
-    echo "<script>alert(`Número de Filas Insertadas en total = " . $contador . "`)</script>";
-    echo "<script> window.location = \"front-cargaDatos-Incidente-tt-crd.php\"; </script>";
 }
