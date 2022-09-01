@@ -90,14 +90,18 @@ excelInput.addEventListener("change",async function(){
 
 });
 
+    let formularioCargaDatos = document.getElementById("enviar-archivo");
 
-boton.addEventListener("click", function(){
-    let valorConfirm = confirm("¿Está seguro/a que desea subir esta información a la base de datos?");
-    console.log(valorConfirm);
-    if(valorConfirm){
-        
-        boton.classList.add("state");
-        alert("Por favor NO interrumpa la carga de la página Web");
-        boton.submit();
-    }
-});
+    boton.addEventListener("click", function(e){
+        let valorConfirm = confirm("¿Está seguro/a que desea subir esta información a la base de datos?");
+        if(valorConfirm){
+            boton.classList.add("state");
+            alert("Por favor NO interrumpa la carga de la página Web");
+            formularioCargaDatos.submit();
+            return true;
+        }else{
+            alert("Has interrumpido la carga de los datos");
+            e.preventDefault();
+            return false;
+        }
+    });

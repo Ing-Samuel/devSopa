@@ -30,81 +30,128 @@ $conection = mysqli_connect($hostname, $username, $password, $database);
 //.....................VALIDO QUE EL ELMENTO CONTENGA VALOR PARA POSTERIORMENTE REALIZAR TODA LA OPERACION DE INSERCION.....................
 if (isset($_FILES["form-control"])) {
 
-    //Capturo el elemento que se encuentra en la variable temporal
-    $objPHPExcel = PHPExcel_IOFactory::load($_FILES["form-control"]["tmp_name"]);
+    if ($_FILES["form-control"]["type"] == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
-    //Asigno la hoja con la cual voy a trabajar
-    $objPHPExcel->setActiveSheetIndex(0);
+        //Capturo el elemento que se encuentra en la variable temporal
+        $objPHPExcel = PHPExcel_IOFactory::load($_FILES["form-control"]["tmp_name"]);
 
-    //Obtengo la hoja
-    $hojaAcutal = $objPHPExcel->getSheet(0);
+        //Asigno la hoja con la cual voy a trabajar
+        $objPHPExcel->setActiveSheetIndex(0);
 
-    //Creo una bandera para que el programa no me inserte los titulos del archivo
-    //Esto lo hago dado que vamos a trabajar con indeces dinamicos bajo un forEach.
-    //No se puede extraer de forma directa el numero de columnas pero, si el de las filas.
-    $bandera = true;
+        //Obtengo la hoja
+        $hojaAcutal = $objPHPExcel->getSheet(0);
 
-    //INSERT
-    $query = "";
+        //Creo una bandera para que el programa no me inserte los titulos del archivo
+        //Esto lo hago dado que vamos a trabajar con indeces dinamicos bajo un forEach.
+        //No se puede extraer de forma directa el numero de columnas pero, si el de las filas.
+        $bandera = true;
 
-    //Contador de filas
-    $contador = 0;
-    
-    $contadorGeneral = 0;
-
-    //Acumulador de errores por fila
-    $stringError = "";
-    //Recorrido de Filas
-    foreach ($hojaAcutal->getRowIterator() as $fila) {
-        $contadorGeneral++;
-
-        //Reinicio la sentencia
+        //INSERT
         $query = "";
 
-        $query = "INSERT INTO incidentes_tt_cerrados VALUES (";
+        //Contador de filas
+        $contador = 0;
+
+        $contadorGeneral = 0;
+
+        //Acumulador de errores por fila
+        $stringError = "";
+        //Recorrido de Filas
+        foreach ($hojaAcutal->getRowIterator() as $fila) {
+
+            //Bandera para validar el número de columnas
+            $contadorDeColumnas = 0;
+
+            //Reinicio la sentencia
+            $query = "";
+
+            // $query = "INSERT INTO tt_general_ows VALUES (";
+            $query = "REPLACE INTO tt_general_ows VALUES (";
 
 
-        //En la primera fila solo cambiará el estado de la bandera
-        if ($bandera) {
+            //En la primera fila solo cambiará el estado de la bandera
+            if ($bandera) {
 
-            $bandera = false;
-        } else {
-
-            //Recorro las Columnas de cada Fila
-            foreach ($fila->getCellIterator() as $celda) {
-
-                $valor = $celda->getCalculatedValue();
-
-                //Con esta funcion escapo las comillas simples para que no hayan errores en la insercion de datos
-                $valor = addslashes($valor);
-
-                //Concateno cada elemento a la sentencia
-                $query = $query . "'" . $valor . "',";
-            }
-
-            //Retiro la ultima coma (,) que quedo sobrando en la sentencia
-            $query = substr($query, 0, strlen($query) - 1);
-
-            //Cierro la sentencia
-            $query = $query . ")";
-
-            //Capturo el query que voy a ejecutar
-            $promise = mysqli_query($conection, $query);
-
-            //Valido el Query            
-            if (mysqli_affected_rows($conection) > 0) {
-                //echo "Numero de Filas Afectadas".mysqli_affected_rows($conection)."<br>";
-                //echo "<script> window.location = \"CargaDatosSNR.php\"; </script>";
-                $contador++;
+                $bandera = false;
             } else {
+                $contadorGeneral++;
 
-                $stringError .= "<center><h3>ERROR EN LA INSERCIÓN DE DATOS : </h3><p>" .mysqli_error($conection) . "</p></center><br>";
+                //Recorro las Columnas de cada Fila
+                $indice = 1;
+                foreach ($fila->getCellIterator() as $celda) {
+
+                    $contadorDeColumnas++;
+
+                    //Exceptuo las columnas de Descripción, Descripción Cierre, Avances y Solución para no ingresarlas a la BD.
+                    //Esto se hace con el fin de no colapsar las consultas y el mysql.
+                    if ($indice !== 17 && $indice !== 64 && $indice !== 70 && $indice !== 75) {
+
+                        $valor = $celda->getCalculatedValue();
+
+                        //Con esta funcion escapo las comillas simples para que no hayan errores en la insercion de datos
+                        $valor = addslashes($valor);
+
+                        //Concateno cada elemento a la sentencia
+                        $query = $query . "'" . $valor . "',";
+
+                    }
+
+                    $indice++;
+                }
+
+                if ($contadorDeColumnas == 106) {
+                    //Retiro la ultima coma (,) que quedo sobrando en la sentencia
+                    $query = substr($query, 0, strlen($query) - 1);
+
+                    //Cierro la sentencia
+                    $query = $query . ")";
+
+                    //Capturo el query que voy a ejecutar
+                    $promise = mysqli_query($conection, $query);
+
+                    //Valido el Query            
+                    if (mysqli_affected_rows($conection) > 0) {
+                        //echo "Numero de Filas Afectadas".mysqli_affected_rows($conection)."<br>";
+                        //echo "<script> window.location = \"CargaDatosSNR.php\"; </script>";
+                        $contador++;
+                    } else {
+
+                        $stringError .= "<center><h3>ERROR EN LA INSERCIÓN DE DATOS : </h3><p>" . mysqli_error($conection) . "</p></center><br>";
+                    }
+                } else {
+                    echo "<h1>Error en la Inserción de Datos</h1>";
+                    echo "<h1 class = 'h1-error'>El archivo debe tener un total de 106 Columnas</h1><br>";
+                    echo "<h1>Por favor valide el contenido del archivo</h1>";
+                    echo "<h1>Número de Columnas Leidas = " . $contadorDeColumnas . "</h1><br>";
+                    break;
+                }
             }
         }
-    }
 
-    echo "<h1>Número de Leidas en total = " . $contadorGeneral . "</h1>";
-    echo "<h1>Número de Filas Insertadas en total = " . $contador . "</h1>";
-    echo "<br><br>".$stringError;
-    mysqli_close($conection);
+        echo "<h1>Nombre del Archivo = " . $_FILES["form-control"]["name"] . "</h1><br>";
+        echo "<h1>Número de Filas Leidas en total = " . $contadorGeneral . "</h1>";
+        echo "<h1>Número de Filas Insertadas en total = " . $contador . "</h1>";
+        echo "<br><br>" . $stringError;
+
+        //CAPTURA DE BACK LOG = CANTIDAD DE TIQUETES QUE AMANECIERON ABIERTOS
+
+        $sentencia = "INSERT INTO tt_backlog_ows 
+        SELECT `ID Tiquete`, `Fecha de Creación`, `Estado`, `Fecha Ingreso`, `Tecnología`, `Tipo de Orden`, `Categoría`, `Subcategoría`, `Segmento`, `Urgencia`, `Sistema Origen`, `Región`, `Departamento`, `Ciudad`, `Fecha Cierre`,now()as díaActual FROM tt_abiertos_cerrados 
+        WHERE `Estado` != 'Cerrado' AND `Estado` != 'Cancelado'";
+
+        $bandera = mysqli_query($conection,$sentencia);
+
+        if($bandera){
+            echo "<br><h1>La captura del BackLog se ha realizado Satisfactoriamente</h1>";
+        }else{
+            echo "<h1 class = 'h1-error'>La captura del BackLog ha Fallado</h1>";
+            echo "<h1>".json_encode(mysqli_error($conection))."</h1>";
+        }
+
+        mysqli_close($conection);
+    } else {
+        echo "<h1>Error en la Inserción de Datos</h1>";
+        echo "<h1 class = 'h1-error'>El archivo debe tener un formato XLSX (EXCEL)</h1><br>";
+        echo "<h1>El archivo: (" . $_FILES["form-control"]["name"] . ") tiene un formato = " . $_FILES["form-control"]["type"] . "</h1>";
+    }
 }

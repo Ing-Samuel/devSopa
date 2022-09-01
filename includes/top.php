@@ -39,8 +39,8 @@ echo "<ul class='menu'>";
 			// echo "</li>";
 			echo "<li><a href='#'>Dashboard MTTR & HOLD</a>";
 				echo "<ul>";
-					echo "<li><a href='http://localhost/devSopaV22/scripts/ows/front-cargaDatos-Incidente-tt-crd.php'> Exporte Datos Ows</a></li>";
-					echo "<li><a href='http://localhost/devSopaV22/scripts/ows/graficaBackLog-SNR.php'>Graficas</a></li>";
+					echo "<li><a href='../../scripts/ows/front-cargaDatos-Incidente-tt-crd.php'> Exporte Datos Ows</a></li>";
+					echo "<li><a href='../../scripts/ows/graficaBackLog-SNR.php'>Graficas</a></li>";
 				echo "</ul>";
 			echo "</li>";
 		}

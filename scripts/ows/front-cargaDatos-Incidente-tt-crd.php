@@ -34,7 +34,7 @@
     echo "</header>";
     ?>
 
-    <form name="enviar-archivo" action="front-cargaDatos-Incidente-tt-crd.php" method="POST" enctype="multipart/form-data">
+    <form onsubmit="return false" id="enviar-archivo" name="enviar-archivo" action="front-cargaDatos-Incidente-tt-crd.php" method="POST" enctype="multipart/form-data">
         <div class="container py-5">
             <div class="row mb-4">
                 <div class="col12 col-md-15">

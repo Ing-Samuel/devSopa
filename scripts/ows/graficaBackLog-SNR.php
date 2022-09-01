@@ -29,6 +29,8 @@
 
     <link rel="stylesheet" type="text/css" href="practica.css">
 
+    <!-- <link rel="stylesheet" href="../../css/normalize.css"> -->
+
     <title>:: OWS_SNR_&_FEC_x_Regionales ::</title>
 </head>
 
@@ -87,7 +89,7 @@
         $db = mysqli_connect($mysql_host, $mysql_user, $mysql_password, $mysql_database) or die("Error durante la conexión a la base de datos");
 
         #region Datos para el select de Año
-        $sqlAnyoSelect = "SELECT DISTINCT(date_format(tt.`Fecha de Creación`, '%Y')) FROM `incidentes_tt_cerrados` as tt ORDER BY tt.`Fecha de Creación`";
+        $sqlAnyoSelect = "SELECT DISTINCT(date_format(tt.`Fecha de Creación`, '%Y')) FROM `tt_abiertos_cerrados` as tt ORDER BY tt.`Fecha de Creación`";
 
         $resultAnyoSelect = mysqli_query($db, $sqlAnyoSelect);
 
@@ -125,7 +127,7 @@
 
             mysqli_close($db);
             //FECHAS DE REGISTRO
-            $sqlFechaSelect = "SELECT DISTINCT(date_format(tt.`Fecha de Creación`, '%d-%M')) FROM `incidentes_tt_cerrados` as tt" . $filterFechaRegistro .
+            $sqlFechaSelect = "SELECT DISTINCT(date_format(tt.`Fecha de Creación`, '%d-%M')) FROM `tt_abiertos_cerrados` as tt" . $filterFechaRegistro .
                 " ORDER BY tt.`Fecha de Creación`";
 
             $resultFechaSelect = mysqli_query($db, $sqlFechaSelect);
@@ -162,7 +164,7 @@
             //echo "<script>console.log(".json_encode($filterRegion).");</script>";
 
             //REGIONES
-            $sqlRegionSelect = "SELECT DISTINCT(`Región`) FROM `incidentes_tt_cerrados` as tt" . $filterRegion .
+            $sqlRegionSelect = "SELECT DISTINCT(`Región`) FROM `tt_abiertos_cerrados` as tt" . $filterRegion .
                 " ORDER BY tt.`Región`";
 
             $resultRegionSelect = mysqli_query($db, $sqlRegionSelect);
@@ -202,7 +204,7 @@
 
 
             //DEPARTAMENTOS
-            $sqlDepartamentoSelect = "SELECT DISTINCT(`Departamento`) FROM `incidentes_tt_cerrados` as tt" . $filterDepartamento .
+            $sqlDepartamentoSelect = "SELECT DISTINCT(`Departamento`) FROM `tt_abiertos_cerrados` as tt" . $filterDepartamento .
                 " ORDER BY tt.`Departamento`";
 
             $resultDepartamentoSelect = mysqli_query($db, $sqlDepartamentoSelect);
@@ -240,7 +242,7 @@
 
 
             //TECNOLOGÍAS
-            $sqlTecnologiaSelect = "SELECT DISTINCT(`Tecnología`) FROM `incidentes_tt_cerrados` as tt" . $filterTecnologia .
+            $sqlTecnologiaSelect = "SELECT DISTINCT(`Tecnología`) FROM `tt_abiertos_cerrados` as tt" . $filterTecnologia .
                 " ORDER BY tt.`Tecnología`";
 
             $resultTecnologiaSelect = mysqli_query($db, $sqlTecnologiaSelect);
@@ -277,7 +279,7 @@
 
 
             //TECNOLOGÍAS
-            $sqlTipoOrdenSelect = "SELECT DISTINCT(`Tipo de Orden`) FROM `incidentes_tt_cerrados` as tt" . $filterTipoOrden .
+            $sqlTipoOrdenSelect = "SELECT DISTINCT(`Tipo de Orden`) FROM `tt_abiertos_cerrados` as tt" . $filterTipoOrden .
                 " ORDER BY tt.`Tipo de Orden`";
 
             $resultTipoOrdenSelect = mysqli_query($db, $sqlTipoOrdenSelect);
@@ -314,7 +316,7 @@
 
 
             //CATEGORIA
-            $sqlCategoriaSelect = "SELECT DISTINCT(`Categoría`) FROM `incidentes_tt_cerrados` as tt" . $filterCategoria .
+            $sqlCategoriaSelect = "SELECT DISTINCT(`Categoría`) FROM `tt_abiertos_cerrados` as tt" . $filterCategoria .
                 " ORDER BY tt.`Categoría`";
 
             $resultCategoriaSelect = mysqli_query($db, $sqlCategoriaSelect);
@@ -351,7 +353,7 @@
 
 
             //CATEGORIA
-            $sqlSubCategoriaSelect = "SELECT DISTINCT(`Subcategoría`) FROM `incidentes_tt_cerrados` as tt" . $filterSubCategoria .
+            $sqlSubCategoriaSelect = "SELECT DISTINCT(`Subcategoría`) FROM `tt_abiertos_cerrados` as tt" . $filterSubCategoria .
                 " ORDER BY tt.`Subcategoría`";
 
             $resultSubCategoriaSelect = mysqli_query($db, $sqlSubCategoriaSelect);
@@ -388,7 +390,7 @@
 
 
             //FECHAS DE REGISTRO
-            $sqlMesSelect = "SELECT DISTINCT(date_format(`Fecha de Creación`,'%M')) FROM `incidentes_tt_cerrados` as tt" . $filterMesRegistro .
+            $sqlMesSelect = "SELECT DISTINCT(date_format(`Fecha de Creación`,'%M')) FROM `tt_abiertos_cerrados` as tt" . $filterMesRegistro .
                 " ORDER BY tt.`Fecha de Creación`";
 
             $resultMesSelect = mysqli_query($db, $sqlMesSelect);
@@ -443,7 +445,6 @@
                         }
                         ?>
                     </select>
-
                 </label>
 
                 <label for="regionSelect">Región
@@ -481,6 +482,7 @@
                         }
                         ?>
                     </select>
+
                 </label>
                 <label for="tecnologiaSelect">Tecnología
                     <select name="tecnologia" id="tecnologiaSelect">
@@ -517,6 +519,7 @@
                         ?>
                     </select>
                 </label>
+
                 <label for="categoriaSelect">Categoría
                     <select name="categoria" id="categoriaSelect">
                         <option value="ALL">ALL</option>
@@ -552,6 +555,7 @@
                         ?>
                     </select>
                 </label>
+
                 <label for="fechaCreacion">Fecha de Creación:
                     <select name="fechaCreacion" id="fechaCreacionSeelect">
                         <option value="ALL">ALL</option>
@@ -569,6 +573,7 @@
                         ?>
                     </select>
                 </label>
+
             </form>
         </div>
 
@@ -607,7 +612,7 @@
         $db = "";
         #region CONSULTA PARA LOS LABELS EN LA AXIS X
 
-        function ConsultaLabels($tipoFecha, $fechaCreacion, $anyoCreacion, $mesCreacion, $db)
+        function ConsultaLabels($tipoFecha, $fechaCreacion, $anyoCreacion, $mesCreacion, $db, $tabla)
         {
 
             $mysql_host = "localhost";
@@ -633,35 +638,36 @@
             }
 
 
-            $queryLabelData = "SELECT DISTINCT(date_format(`" . $tipoFecha . "`, '%d-%M')) FROM `incidentes_tt_cerrados` as tt" . $filterGraficasUno . " ORDER BY `" . $tipoFecha . "`";
+            $queryLabelData = "SELECT DISTINCT(date_format(`" . $tipoFecha . "`, '%d-%M')) FROM $tabla as tt" . $filterGraficasUno . " ORDER BY `" . $tipoFecha . "`";
 
             $numRow = mysqli_query($db, $queryLabelData);
 
             $labelData[] = array();
 
             if (mysqli_num_rows($numRow)) {
-                // $i = 0;
-                // while ($data = mysqli_fetch_row($numRow)) {
-                //     $labelData[$i] = $data[0];
-                //     $i++;
-                // }
 
-                //Optimice la consulta a una sola línea de código aunque puede resultar siendo lo mismo por la función map
                 $labelData = array_map(function ($e) {
                     return $e[0];
                 }, mysqli_fetch_all($numRow));
             }
             mysqli_close($db);
+
             return $labelData;
         }
 
+
+
+        $labelData = ConsultaLabels("Fecha de Creación", $fechaCreacion, $anyoCreacion, $mesCreacion, $db, "`tt_abiertos_cerrados`");
+
+        $labelData2 = ConsultaLabels("Fecha Cierre", $fechaCreacion, $anyoCreacion, $mesCreacion, $db, "`tt_abiertos_cerrados`");
+
+        $labelBackLog = ConsultaLabels("Fecha BackLog", $fechaCreacion, $anyoCreacion, $mesCreacion, $db, "`tt_backlog_ows`");
+
         #endregion
-        $labelData = ConsultaLabels("Fecha Ingreso", $fechaCreacion, $anyoCreacion, $mesCreacion, $db);
-        $labelData2 = ConsultaLabels("Fecha Cierre", $fechaCreacion, $anyoCreacion, $mesCreacion, $db);
 
         #region Consulta General: Contar la cantidad de tiquetes por mes validadando los filtros
 
-        function ConsultaDatosAxis($conection, $labelData, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, $segmento, $segmentoSNR, $SOservisdesk, $SObmc, $mesCreacion, $estado, $tipoFecha)
+        function ConsultaDatosAxis($conection, $labelData, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, $segmento, $segmentoSNR, $SOservisdesk, $SObmc, $mesCreacion, $estado, $tipoFecha, $tabla)
         {
             $mysql_host = "localhost";
             $mysql_user = "root";
@@ -670,7 +676,7 @@
 
             $conection = mysqli_connect($mysql_host, $mysql_user, $mysql_password, $mysql_database) or die("Error durante la conexión a la base de datos");
 
-            $arrayFilter = array(" date_format(tt.`" . $tipoFecha . "`, '%d-%M') LIKE '" . $fechaCreacion . "%'", "`Región` = '" . $region . "'", "`Departamento` = '" . $departamento . "'", "`Tecnología` = '" . $tecnologia . "'", "`Tipo de Orden` = '" . $tipoOrden . "'", "`Categoría` = '" . $categoria . "'", "`Subcategoría` = '" . $subcategoria . "'", "`segmento` NOT LIKE '" . $segmento . "%'", "`segmento` LIKE '" . $segmentoSNR . "%'", "`Sistema Origen` = '" . $SOservisdesk . "'", "`Sistema Origen` = '" . $SObmc . "'", " date_format(tt.`" . $tipoFecha . "`, '%M') = '" . $mesCreacion . "'", "`Estado` " . $estado, "date_format(tt.`" . $tipoFecha . "`, '%d-%M') IS NOT NULL");
+            $arrayFilter = array(" date_format(tt.`" . $tipoFecha . "`, '%d-%M') LIKE '" . $fechaCreacion . "%'", "`Región` = '" . $region . "'", "`Departamento` = '" . $departamento . "'", "`Tecnología` = '" . $tecnologia . "'", "`Tipo de Orden` = '" . $tipoOrden . "'", "`Categoría` = '" . $categoria . "'", "`Subcategoría` = '" . $subcategoria . "'", "(`segmento` != '" . $segmento . "' OR `segmento` IS NULL)", "`segmento` = '" . $segmentoSNR . "'", "`Sistema Origen` = '" . $SOservisdesk . "'", "`Sistema Origen` = '" . $SObmc . "'", " date_format(tt.`" . $tipoFecha . "`, '%M') = '" . $mesCreacion . "'", "`Estado` " . $estado, "date_format(tt.`" . $tipoFecha . "`, '%d-%M') IS NOT NULL", " date_format(tt.`" . $tipoFecha . "`, '%Y') LIKE '" . $anyoCreacion . "%'");
 
             $filterGraficasDos = "";
 
@@ -684,9 +690,9 @@
                 }
             }
 
-            $query = "SELECT COUNT(`ID Tiquete`), date_format(`" . $tipoFecha . "`,'%d-%M') FROM `incidentes_tt_cerrados` as tt " . $filterGraficasDos . " GROUP BY date_format(`" . $tipoFecha . "`,'%d-%M') ORDER BY `" . $tipoFecha . "`";
+            $query = "SELECT COUNT(`ID Tiquete`), date_format(`" . $tipoFecha . "`,'%d-%M') FROM $tabla as tt " . $filterGraficasDos . " GROUP BY date_format(`" . $tipoFecha . "`,'%d-%M') ORDER BY `" . $tipoFecha . "`";
 
-            // echo "<script> console.log('" . addslashes($query) . "'); </script>";
+            echo "<script> console.log('" . addslashes($query) . "'); </script>";
 
             //Query
             $promise = mysqli_query($conection, $query);
@@ -722,76 +728,69 @@
         $dataTtCerradosTRES = array();
 
         //Consulto los datos en general: Cantidad de Tiquetes Por día - Cerrados y Abiertos
-        $dataTtUNO = ConsultaDatosAxis($db, $labelData, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "ALL", "ALL", $mesCreacion, "NOT LIKE 'Cerrado%'", "Fecha Ingreso");
+        $dataTtUNO = ConsultaDatosAxis($db, $labelData, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "ALL", "ALL", $mesCreacion, "NOT LIKE 'ALL'", "Fecha de Creación", "`tt_abiertos_cerrados`");
 
-        $dataTtCerradosUno = ConsultaDatosAxis($db, $labelData2, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "ALL", "ALL", $mesCreacion, "LIKE 'Cerrado%'", "Fecha Cierre");
+        $dataTtCerradosUno = ConsultaDatosAxis($db, $labelData2, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "ALL", "ALL", $mesCreacion, "LIKE 'Cerrado%'", "Fecha Cierre", "`tt_abiertos_cerrados`");
 
-        //echo "<script>console.log('".json_encode($dataTtCerradosUno)."')</script>";
-        #region Requerimiento muestra de datos BackLog
-
-        $mysql_database = "devsopa";
-        $mysql_host = "localhost";
-        $mysql_user = "root";
-        $mysql_password = "";
-
-        $conection = mysqli_connect($mysql_host,$mysql_user,$mysql_password,$mysql_database);
-
-        $query = "SELECT  CONCAT(bg.Month,'-',bg.Day), `bg`.`Recuento-idtiquete`
-        FROM `backlog_general` as bg";
-
-        $resultado = mysqli_query($conection,$query);
-
-        if(mysqli_num_rows($resultado)){
-            $dataSetBackLog = mysqli_fetch_all($resultado);
-        }
+        $dataBackLog = ConsultaDatosAxis($db, $labelBackLog, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "ALL", "ALL", $mesCreacion, "ALL", "Fecha BackLog", "`tt_backlog_ows`");
 
 
 
-        // echo "<script>console.log(".json_encode($dataSetBackLog).")</script>";
 
-        $labelBackLog = array_column($dataSetBackLog,0);
-        $dataBackLog = array_column($dataSetBackLog,1);
+        #region Captura del BackLog Acumulado
+        // $conexion = mysqli_connect($mysql_host, $mysql_user, $mysql_password, $mysql_database);
 
-        // echo "<script>console.log(".json_encode($labelBackLog).")</script>";
-        // echo "<script>console.log(".json_encode($dataBackLog).")</script>";
+        // $queryBackLog = "SELECT CONCAT(bg.Day,'-',bg.Month), `Recuento de idtiquete`
+        // FROM `backlog_old` bg";
+        // $resultadoConsulta = mysqli_query($conexion, $queryBackLog);
+        // $dataBackLogOld = mysqli_fetch_all($resultadoConsulta);
 
-        mysqli_close($conection);
+        // mysqli_close($conexion);
+
+        // $labelBackLog = array_merge(array_column($dataBackLogOld, 0), $labelBackLog);
+        // $dataBackLog = array_merge(array_column($dataBackLogOld, 1), $dataBackLog);
+
+
+        #endregion
+
+
+
 
         if ($tipoOrden == 'TT_SNR') {
 
             //Consulta por Tiquetes Señal a ruido (SNR) : Cantidad de 'TIQUETES TECNICOS SNR' DIFERENTE A CERRADOS por día
-            $dataTtDOS = ConsultaDatosAxis($db, $labelData, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "TIQUETE", "ALL", "ALL", "ALL", $mesCreacion, "NOT LIKE 'Cerrado%'", "Fecha Ingreso");
+            $dataTtDOS = ConsultaDatosAxis($db, $labelData, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "TIQUETE PROBLEMA", "ALL", "ALL", "ALL", $mesCreacion, "ALL", "Fecha de Creación", "`tt_abiertos_cerrados`");
 
             //Consulta por Tiquetes Señal a ruido (SNR) : Cantidad de 'TIQUETES PROBLEMAS SNR DIFERENTE A CERRADOS' por día
-            $dataTtTRES = ConsultaDatosAxis($db, $labelData, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "TIQUETE", "ALL", "ALL", $mesCreacion, "NOT LIKE 'Cerrado%'", "Fecha Ingreso");
+            $dataTtTRES = ConsultaDatosAxis($db, $labelData, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "TIQUETE PROBLEMA", "ALL", "ALL", $mesCreacion, "ALL", "Fecha de Creación", "`tt_abiertos_cerrados`");
 
             //Consulta por Tiquetes Señal a ruido (SNR) : Cantidad de 'TIQUETES TECNICOS SNR' CERRADOS por día
-            $dataTtCerradosDOS = ConsultaDatosAxis($db, $labelData2, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "TIQUETE", "ALL", "ALL", "ALL", $mesCreacion, "LIKE 'Cerrado%'", "Fecha Cierre");
+            $dataTtCerradosDOS = ConsultaDatosAxis($db, $labelData2, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "TIQUETE PROBLEMA", "ALL", "ALL", "ALL", $mesCreacion, "LIKE 'Cerrado%'", "Fecha Cierre", "`tt_abiertos_cerrados`");
 
             //Consulta por Tiquetes Señal a ruido (SNR) : Cantidad de 'TIQUETES PROBLEMAS SNR' CERRADOS por día
-            $dataTtCerradosTRES = ConsultaDatosAxis($db, $labelData2, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "TIQUETE", "ALL", "ALL", $mesCreacion, "LIKE 'Cerrado%'", "Fecha Cierre");
+            $dataTtCerradosTRES = ConsultaDatosAxis($db, $labelData2, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "TIQUETE PROBLEMA", "ALL", "ALL", $mesCreacion, "LIKE 'Cerrado%'", "Fecha Cierre", "`tt_abiertos_cerrados`");
 
             //Arreglo general con los datos para graficar y sus respesctivos Titulos
-            $generalData[] = array($labelData, $dataTtUNO, $dataTtDOS, $dataTtTRES, "TOTAL TIQUETES SNR", "TOTAL TIQUETES SNR", "TIQUETE TÉCNICO - SNR", "TIQUETE PROBLEMA - SNR", "ALL", $dataTtCerradosUno, $dataTtCerradosDOS, $dataTtCerradosTRES, $labelData2,$labelBackLog,$dataBackLog);
-        } else if ($tipoOrden == 'TT_TIQUET') {
+            $generalData[] = array($labelData, $dataTtUNO, $dataTtDOS, $dataTtTRES, "TOTAL TIQUETES SNR", "TOTAL TIQUETES SNR", "TIQUETE TÉCNICO - SNR", "TIQUETE PROBLEMA - SNR", "ALL", $dataTtCerradosUno, $dataTtCerradosDOS, $dataTtCerradosTRES, $labelData2, $labelBackLog, $dataBackLog);
+        } else if ($tipoOrden == 'TT_TIQUETE TECNICO') {
 
             //Consulta por Tiquetes Señal a ruido (SNR) : Cantidad de 'TIQUETES TECNICOS DE ORIGEN SERVISDEKS' por día
-            $dataTtDOS = ConsultaDatosAxis($db, $labelData, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "Servic", "ALL", $mesCreacion, "NOT LIKE 'Cerrado%'", "Fecha Ingreso");
+            $dataTtDOS = ConsultaDatosAxis($db, $labelData, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "Servicedesk", "ALL", $mesCreacion, "ALL", "Fecha de Creación", "`tt_abiertos_cerrados`");
 
             //Consulta por Tiquetes Señal a ruido (SNR) : Cantidad de 'TIQUETES TECNICOS DE ORIGEN BMC' por día
-            $dataTtTRES = ConsultaDatosAxis($db, $labelData, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "ALL", "BMC RE", $mesCreacion, "NOT LIKE 'Cerrado%'", "Fecha Ingreso");
+            $dataTtTRES = ConsultaDatosAxis($db, $labelData, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "ALL", "BMC REMEDY", $mesCreacion, "ALL", "Fecha de Creación", "`tt_abiertos_cerrados`");
 
             //Consulta por Tiquetes Señal a ruido (SNR) : Cantidad de 'TIQUETES TECNICOS DE ORIGEN SERVISDEKS' por día
-            $dataTtCerradosDOS = ConsultaDatosAxis($db, $labelData2, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "Servic", "ALL", $mesCreacion, "LIKE 'Cerrado%'", "Fecha Cierre");
+            $dataTtCerradosDOS = ConsultaDatosAxis($db, $labelData2, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "Servicedesk", "ALL", $mesCreacion, "LIKE 'Cerrado%'", "Fecha Cierre", "`tt_abiertos_cerrados`");
 
             //Consulta por Tiquetes Señal a ruido (SNR) : Cantidad de 'TIQUETES TECNICOS DE ORIGEN BMC' por día
-            $dataTtCerradosTRES = ConsultaDatosAxis($db, $labelData2, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "ALL", "BMC RE", $mesCreacion, "LIKE 'Cerrado%'", "Fecha Cierre");
+            $dataTtCerradosTRES = ConsultaDatosAxis($db, $labelData2, $fechaCreacion, $anyoCreacion, $region, $departamento, $tecnologia, $tipoOrden, $categoria, $subcategoria, "ALL", "ALL", "ALL", "BMC REMEDY", $mesCreacion, "LIKE 'Cerrado%'", "Fecha Cierre", "`tt_abiertos_cerrados`");
 
-            $generalData[] = array($labelData, $dataTtUNO, $dataTtDOS, $dataTtTRES, "TOTAL TIQUETES TÉCNICOS", "TOTAL TT_TIQUETE TÉCNICO", "ORIGEN SERVICE DESK", "ORIGEN BMC REMEDY", $mesCreacion, $dataTtCerradosUno, $dataTtCerradosDOS, $dataTtCerradosTRES, $labelData2,$labelBackLog,$dataBackLog);
+            $generalData[] = array($labelData, $dataTtUNO, $dataTtDOS, $dataTtTRES, "TOTAL TIQUETES TÉCNICOS", "TOTAL TT_TIQUETE TÉCNICO", "ORIGEN SERVICE DESK", "ORIGEN BMC REMEDY", $mesCreacion, $dataTtCerradosUno, $dataTtCerradosDOS, $dataTtCerradosTRES, $labelData2, $labelBackLog, $dataBackLog);
         } else {
 
             $nulleable = array();
-            $generalData[] = array($labelData, $dataTtUNO, $nulleable, $nulleable, "TOTAL ORDENES OWS - Abiertos", "TOTAL ORDENES: " . $tipoOrden, "", "", $mesCreacion, $dataTtCerradosUno, $dataTtCerradosDOS, $dataTtCerradosTRES, $labelData2,$labelBackLog,$dataBackLog);
+            $generalData[] = array($labelData, $dataTtUNO, $nulleable, $nulleable, "TOTAL ORDENES OWS", "TOTAL ORDENES: " . $tipoOrden, "", "", $mesCreacion, $dataTtCerradosUno, $dataTtCerradosDOS, $dataTtCerradosTRES, $labelData2, $labelBackLog, $dataBackLog);
         }
     }
 
@@ -820,7 +819,7 @@
         let generalData = <?php echo json_encode($generalData); ?>;
 
         //Desestructuro los datos
-        let labels, dataTTAbiertos, dataTTAbiertosDos, dataTTAbiertosTres, tituloGeneral, tituloDataLabelUno, tituloDataLabelDos, tituloDataLabelTres, dataTtCerrado, dataTtCerradoDOS, dataTtCerradoTRES, labelData2,labelBackLog,dataBackLog;
+        let labels, dataTTAbiertos, dataTTAbiertosDos, dataTTAbiertosTres, tituloGeneral, tituloDataLabelUno, tituloDataLabelDos, tituloDataLabelTres, dataTtCerrado, dataTtCerradoDOS, dataTtCerradoTRES, labelData2, labelBackLog, dataBackLog;
 
         labels = generalData[0][0];
         dataTTAbiertos = generalData[0][1]; // Total tiquetes Abiertos
@@ -838,8 +837,8 @@
         dataBackLog = generalData[0][14];
 
 
-        document.getElementById("chart-title").innerText = tituloGeneral + " - ABIERTOS";
-        document.getElementById("chart-title2").innerText = tituloGeneral + " - CERRADOS";
+        document.getElementById("chart-title").innerText = tituloDataLabelUno + " - CREADOS";
+        document.getElementById("chart-title2").innerText = tituloDataLabelUno + " - CERRADOS";
 
         //Mapeo y Convierto los Arrays de String a Numeros Enteros
         dataTTAbiertos = dataTTAbiertos.map(elemento => {
@@ -920,10 +919,10 @@
                     label: tituloDataLabelTres,
                     data: dataTTAbiertosTres,
                     backgroundColor: [
-                        'rgba(255, 196, 77,0.5)',
+                        'rgba(93, 109, 126,0.5)',
                     ],
                     borderColor: [
-                        'rgb(255, 196, 77)'
+                        'rgb(93, 109, 126, 77)'
                     ],
                     borderWidth: 2,
                     tension: 0.3
@@ -938,10 +937,10 @@
                     label: tituloDataLabelUno,
                     data: dataTtCerrado,
                     backgroundColor: [
-                        'rgba(186, 74, 0,0.5)',
+                        'rgba(4, 48, 106,0.5)',
                     ],
                     borderColor: [
-                        'rgb(186, 74, 0)'
+                        'rgb(4, 48, 106)'
                     ],
                     borderWidth: 2,
                     tension: 0.3
@@ -962,10 +961,10 @@
                     label: tituloDataLabelTres,
                     data: dataTtCerradoTRES,
                     backgroundColor: [
-                        'rgba(255, 196, 77,0.5)',
+                        'rgba(93, 109, 126,0.5)',
                     ],
                     borderColor: [
-                        'rgb(255, 196, 77)'
+                        'rgb(93, 109, 126,0.5)'
                     ],
                     borderWidth: 2,
                     tension: 0.3
@@ -979,10 +978,10 @@
                 label: "BackLog",
                 data: dataBackLog,
                 backgroundColor: [
-                    'rgba(0, 120, 86,0.5)',
+                    'rgba(4, 48, 106,0.5)',
                 ],
                 borderColor: [
-                    'rgb(0, 120, 86)'
+                    'rgb(4, 48, 106)'
                 ],
                 borderWidth: 2,
                 tension: 0.3

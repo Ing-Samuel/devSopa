@@ -4,7 +4,7 @@
 */
 
 body {
-    
+    margin: 0;
     background: whitesmoke;
 }
 
@@ -29,7 +29,7 @@ ul.menu {
     height: 36px;
     /*width: 90%;*/
     /* width: 1174px; */
-    margin-top: 0px;
+    margin-top: -4px;
     margin-left: auto;
     margin-right: auto;
  
@@ -42,7 +42,7 @@ ul.menu {
  
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
-    border-radius: 5px;
+    border-radius: 0px;
 }
  
 ul.menu li {
@@ -166,7 +166,7 @@ img{
     object-fit: fill;
     width: 100vw;
     height: 10vw;
-    margin: -3px;
+    margin: 0;
 }
 
 
@@ -181,4 +181,8 @@ h1{
     text-align: center;
     color: #2B6287;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.h1-error{
+    color: #cf0000;
 }
